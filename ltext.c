@@ -11,6 +11,8 @@
 
 //Defines
 
+#define LTEXT_VERSION "0.0.5"
+
 #define CTRL_KEY(k) ((k) & 0x1f)
 
 //Data
@@ -43,9 +45,9 @@ void enableRawMode(){
   atexit(disableRawMode);
 
   struct termios raw = E.orig_termios;
-  raw.c_lflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-  raw.c_lflag &= ~(OPOST);
-  raw.c_lflag |= ~(CS8);
+  raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+  raw.c_oflag &= ~(OPOST);
+  raw.c_cflag |= (CS8);
   raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
   raw.c_cc[VMIN] = 0;
   raw.c_cc[VTIME] = 1;
@@ -102,14 +104,28 @@ void abFree(struct abuf *ab){
 void editorDrawRows(struct abuf *ab){
   int y;
   for(y = 0; y < E.screenrows; y++){
+    if(y == E.screenrows / 3){
+      char welcome[80];
+      int welcomelen = snprintf(welcome, sizeof(welcome), "LText (Litext(Lite Text)) -- version %s", LTEXT_VERSION);
+      if(welcomelen > E.screencols) welcomelen = E.screencols;
+      int padding = (E.screencols - welcomelen) / 2;
+      if (padding){
+        abAppend(ab, "~", 1);
+        padding--;
+      }
+      while(padding--) abAppend(ab, " ", 1);
+      abAppend(ab, welcome, welcomelen);
+    }
+    else
     abAppend(ab, "~", 1);
+    }
 
     abAppend(ab, "\x1b[k", 3);
     if(y < E.screenrows - 1){
       abAppend(ab, "\r\n", 2);
     }
   }
-}
+
 
 void editorRefreshScreen(){
   struct abuf ab = ABUF_INIT;
