@@ -1,5 +1,5 @@
 # LText (Litext (Lite Text))
-A lightweight Linux text editor who's name is an abbreviation of an abbreviation.
+A lightweight Linux text editor. 
 Eventually this will be coded in x86_64 assembly to save memory and storage to save you cash in this economy, but for now, it is a C learning project for me. 
 This is also a learning project for me in the world of web design. That will come with the assembly.
 You can use it if you want, but I would recommend just learning vim or use nano. More to come later.
